@@ -1,0 +1,70 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels
+@model ObavijestDetaljiVM
+
+@{
+    ViewData["Title"] = "Detalji obavijesti";
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+}
+
+<div class="row">
+    <div id="obavijestDodaj" class="col-sm-8" style="display: none;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title custom">Nova obavijest</h3>
+            </div>
+
+            <div class="box-body">
+                <div id="obavijest"></div>
+            </div>
+
+            <div class="box-footer">
+                <a href="/ModulTrener/Obavijest/Index" class="btn btn-default">Zatvori</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <div class="col-sm-12 col-lg-10">
+                    <h3 class="box-title custom">@Model.Naslov</h3>
+                    @{
+                        if (Model.IzmjeneObavijesti != null)
+                        {
+                            <br /><span>Posljednji put uređivano - @Model.DatumIzmjene</span>
+                        }
+                    }
+                </div>
+
+                <div class="col-sm-12 col-lg-2 text-right">
+                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/Obavijest/Uredi?id=@Model.ObavijestId" data-ajax-update="#obavijest" class="btn btn-warning glyphicon glyphicon-edit"></a>
+                    <a href="/ModulRecepcionar/Obavijest/Obrisi?=@Model.ObavijestId" class="btn btn-danger glyphicon glyphicon-trash"></a>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="text-justify obavijesti-sadrzaj">
+                    <p>@Model.Sadrzaj</p>
+                </div>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-12 col-lg-11 margin-top-9">
+                    <p>Napisao/la: @Model.Zaposlenik.Ime @Model.Zaposlenik.Prezime - Objavljeno: @Model.DatumObjave</p>
+                </div>
+                <div class="col-sm-12 col-lg-1">
+                    <a href="/ModulRecepcionar/Obavijest/Index" class="btn btn-default">Zatvori</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function prikaziDiv() {
+        $('#obavijestDodaj').show();
+    }
+
+    function zatvoriDialog() {
+        $('#obavijestDodaj').hide();
+    }
+</script>

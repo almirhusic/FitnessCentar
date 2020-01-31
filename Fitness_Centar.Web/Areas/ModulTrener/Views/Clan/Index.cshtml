@@ -1,0 +1,99 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulTrener.ViewModels
+@model List<SviClanoviVM>
+
+@{
+    ViewData["Title"] = "Članovi";
+}
+<div id="message" class="row">
+    <div class="col-sm-12 col-lg-6">
+        @if (ViewData["brisanje"] != null)
+        {
+            <div class="message alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-check"></i> Obrisan!</h4>
+                <h5>@ViewData["brisanje"]</h5>
+            </div>
+        }
+        @if (ViewData["dodavanje"] != null)
+        {
+            <div class="message alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-check"></i> Dodan!</h4>
+                <h5>@ViewData["dodavanje"]</h5>
+            </div>
+        }
+        @if (ViewData["greska"] != null)
+        {
+            <div class="message alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-check"></i> Greška!</h4>
+                <h5>@ViewData["greska"]</h5>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Upravljanje članovima</h3>
+            </div>
+            <div class="box-body">
+                <table id="example" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Ime</th>
+                            <th>Prezime</th>
+                            <th>Učlanjen</th>
+                            <th>Članarina</th>
+                            <th>Br. čl. kartice</th>
+                            <th>Grad</th>
+                            <th class="text-center">Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model)
+                        {
+                            <tr>
+                                <td class="rowclick" onclick="row_click(@c.ClanId)">@c.Clan.Ime</td>
+                                <td class="rowclick" onclick="row_click(@c.ClanId)">@c.Clan.Prezime</td>
+                                <td class="rowclick" onclick="row_click(@c.ClanId)">@c.Clan.DatumUclanjivanja.ToShortDateString()</td>
+                                <td class="rowclick" onclick="row_click(@c.ClanId)">@c.Clan.VrstaClanarine.Naziv</td>
+                                <td class="rowclick" onclick="row_click(@c.ClanId)">@c.Clan.BrojClanskeKartice</td>
+                                <td class="rowclick" onclick="row_click(@c.ClanId)">@c.Clan.Grad.Naziv</td>
+                                <td class="text-center">
+                                    @{
+                                        if (c.LicniClan != "Da")
+                                        {
+                                            <a asp-action="Snimi" asp-route-id="@c.ClanId" onclick="changeUrl()" class="b_r btn btn-success glyphicon glyphicon-ok"></a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="Obrisi" asp-route-id="@c.ClanId" onclick="changeUrl()" class="b_r btn btn-danger glyphicon glyphicon-trash"></a>
+                                        }
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-12">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function row_click(clanId) {
+        window.location.href = '/ModulTrener/Clan/Detalji?id=' + clanId;
+    }
+</script>

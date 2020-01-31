@@ -1,0 +1,84 @@
+﻿@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels
+@model ObavijestUrediVM
+
+@{ 
+    Layout = null;
+
+    List<SelectListItem> listZaposlenici = new List<SelectListItem>();
+    listZaposlenici.AddRange(Model.Zaposlenici.Select(x => new SelectListItem
+    {
+        Text = x.Ime + " " + x.Prezime,
+        Value = x.ZaposlenikId.ToString()
+    }).ToList());
+}
+<form method="post" data-ajax-url="/ModulRecepcionar/Obavijest/Snimi" data-ajax="true" data-ajax-method="post" data-ajax-update="#obavijest">
+    @Html.HiddenFor(x => x.ObavijestId)
+
+    <div class="form-group">
+        <div class="col-sm-6">
+            @if (ViewData["view_uredi"] == null)
+            {
+                @Html.Label("Objavio")
+                @Html.DropDownListFor(x => x.ZaposlenikId, listZaposlenici, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.ZaposlenikId)
+            }
+            else
+            {
+                @Html.Label("Objavio")
+                @Html.HiddenFor(x => x.ZaposlenikId)
+                @Html.TextBoxFor(x => x.ImePrezimeZaposlenika, new { @class = "form-control", @readonly = "readonly" })
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-6">
+            @Html.Label("Datum objave")
+            @Html.TextBoxFor(x => x.DatumObjave, DateTime.Now.ToString(), new { @class = "form-control", @readonly = "readonly" })
+            @Html.ValidationMessageFor(x => x.DatumObjave)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            @Html.Label("Naslov")  @Html.ValidationMessageFor(x => x.Naslov)
+            @Html.TextBoxFor(x => x.Naslov, new { @class = "form-control" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            @Html.Label("Sadržaj")  
+            @Html.ValidationMessageFor(x => x.Sadrzaj)
+            @Html.TextAreaFor(x => x.Sadrzaj, new { @class = "form-control textarea-custom" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-center margin-top-15">
+            <input type="submit" value="Snimi" class="btn btn-success" />
+        </div>
+    </div>
+    
+
+    <div class="row">
+        <div class="col-sm-12">
+            @if (ViewData["porukaUspjesno"] != null)
+            {
+                <br />
+                <div class="alert alert-success">
+                    <b>@ViewData["porukaUspjesno"]</b>
+                </div>
+            }
+            else if (ViewData["porukaNeuspjesno"] != null)
+            {
+                <br />
+                <div class="alert alert-danger">
+                    <b>@ViewData["porukaNeuspjesno"]</b>
+                </div>
+            }
+        </div>
+    </div>
+</form>

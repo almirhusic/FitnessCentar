@@ -1,0 +1,77 @@
+﻿@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels
+@model List<UplataClanarine>
+@{ 
+    ViewData["Title"] = "Uplate članarina";
+}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Upravljanje uplatama članarina</h3>
+            </div>
+            <div class="box-body">
+                <table id="example" class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Član</th>
+                            <th>Datum uplate</th>
+                            <th>Iznos</th>
+                            <th class="text-center">Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var u in Model)
+                        {
+                            <tr>
+                                <td>@u.Clan.Ime @u.Clan.Prezime</td>
+                                <td>@u.DatumUplate.ToShortDateString()</td>
+                                <td>@u.Iznos</td>
+                                <td class="text-center">
+                                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/UplataClanarine/Uredi?id=@u.UplataClanarineId" data-ajax-update="#uplata" class="btn btn-warning glyphicon glyphicon-edit"></a>
+                                    <a asp-action="Obrisi" asp-route-id="@u.UplataClanarineId" class="btn btn-danger glyphicon glyphicon-trash"></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-offset-5">
+                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/UplataClanarine/Dodaj" data-ajax-update="#uplata" class="btn btn-success">Dodaj</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="uplataDodaj" class="col-sm-6" style="display: none;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Dodajte novu uplatu</h3>
+            </div>
+
+            <div class="box-body">
+                <div id="uplata"></div>
+            </div>
+
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-12 text-right padding-r-30">
+                        <a href="/ModulRecepcionar/UplataClanarine/Index" class="btn btn-default">Zatvori</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function prikaziDiv() {
+        $('#uplataDodaj').show();
+    }
+
+    function zatvoriDialog() {
+        $('#uplataDodaj').hide();
+    }
+</script>

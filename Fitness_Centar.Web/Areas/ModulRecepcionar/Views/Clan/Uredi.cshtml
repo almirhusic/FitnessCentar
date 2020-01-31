@@ -1,0 +1,188 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@model Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels.ClanUrediVM
+
+@{
+    ViewData["Title"] = "Uredi podatke člana";
+    List<SelectListItem> listGradovi = Model.Gradovi.Select(x => new SelectListItem
+    {
+        Text = x.Naziv,
+        Value = x.GradId.ToString()
+    }).ToList();
+
+    List<SelectListItem> listClanarine = Model.Clanarine.Select(x => new SelectListItem
+    {
+        Text = x.Naziv,
+        Value = x.VrstaClanarineId.ToString()
+    }).ToList();
+
+    List<SelectListItem> listSpol = new List<SelectListItem>();
+    listSpol.Add(new SelectListItem { Value = null, Text = "Odaberite spol" });
+    listSpol.Add(new SelectListItem { Value = "Muško", Text = "Muško" });
+    listSpol.Add(new SelectListItem { Value = "Žensko", Text = "Žensko" });
+}
+
+@using (Html.BeginForm("Snimi", "Clan"))
+{
+    @Html.HiddenFor(x => x.ClanId)
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <i class="fa fa-pencil-square-o"></i>
+                    <h3 class="box-title">Uređivanje podataka</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="Ime" class="col-sm-5 control-label">Ime</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.Ime, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Ime)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Prezime" class="col-sm-5 control-label">Prezime</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.Prezime, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Prezime)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="KorisnickoIme" class="col-sm-5 control-label">Korisničko ime</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.KorisnickoIme, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.KorisnickoIme)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Lozinka" class="col-sm-5 control-label">Lozinka</label>
+                                <div class="col-sm-7">
+                                    @Html.PasswordFor(x => x.Lozinka, new { @class = "form-control", value = Model.Lozinka })
+                                    @Html.ValidationMessageFor(x => x.Lozinka)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="JMBG" class="col-sm-5 control-label">JMBG</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.JMBG, new { @class = "form-control", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(x => x.JMBG)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="DatumRodjenja" class="col-sm-5 control-label">Datum rođenja</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.DatumRodjenja, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(x => x.DatumRodjenja)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Adresa" class="col-sm-5 control-label">Adresa</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.Adresa, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Adresa)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="Telefon" class="col-sm-5 control-label">Telefon</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.Telefon, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Telefon)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Email" class="col-sm-5 control-label">Email</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Email)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Spol" class="col-sm-5 control-label">Spol</label>
+                                <div class="col-sm-7">
+                                    @Html.DropDownListFor(x => x.Spol, listSpol, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Spol)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="DatumUclanjivanja" class="col-sm-5 control-label">Datum učlanjivanja</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.DatumUclanjivanja, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(x => x.DatumUclanjivanja)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="BrojClanskeKartice" class="col-sm-5 control-label">Broj članske kartice</label>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(x => x.BrojClanskeKartice, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.BrojClanskeKartice)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="VrstaClanarineId" class="col-sm-5 control-label">Vrsta članarine</label>
+                                <div class="col-sm-7">
+                                    @Html.DropDownListFor(x => x.VrstaClanarineId, listClanarine, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.VrstaClanarineId)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="GradId" class="col-sm-5 control-label">Grad</label>
+                                <div class="col-sm-7">
+                                    @Html.DropDownListFor(x => x.GradId, listGradovi, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.GradId)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="small-box-footer">
+                    @if (ViewData["porukaUspjesno"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <b>@ViewData["porukaUspjesno"]</b>
+                        </div>
+                    }
+                    else if (ViewData["porukaNeuspjesno"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <b>@ViewData["porukaNeuspjesno"]</b><br />
+                            <b>@ViewData["clanGreska"]</b>
+                            <b>@ViewData["karticaGreska"]</b>
+                            <b>@ViewData["korisnickoImeGreska"]</b>
+                            <b>@ViewData["telefonGreska"]</b>
+                            <b>@ViewData["jmbgGreska"]</b>
+                        </div>
+                    }
+                </div>
+
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-12 text-right padding-r-30">
+                            <input type="submit" value="Sačuvaj" class="btn btn-success" />
+                            <a href="/ModulRecepcionar/Clan/Index" class="btn btn-default">Zatvori</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

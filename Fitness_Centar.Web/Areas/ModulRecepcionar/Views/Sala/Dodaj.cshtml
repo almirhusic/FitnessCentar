@@ -1,0 +1,47 @@
+﻿@using Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels
+@model SalaUrediVM
+@{ Layout = null; }
+
+<form method="post" data-ajax-url="/ModulRecepcionar/Sala/Snimi" data-ajax="true" data-ajax-method="post" data-ajax-update="#sala">
+    @Html.HiddenFor(x => x.SalaId)
+
+    <div class="form-group">
+        <label for="Naziv" class="col-sm-5 control-label">Naziv</label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.Naziv, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Naziv)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="BrojMjesta" class="col-sm-5 control-label">Broj mjesta</label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.BrojMjesta, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.BrojMjesta)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12 text-right margin-top-9">
+            <input type="submit" value="Snimi" class="btn btn-success" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            @if (ViewData["porukaUspjesno"] != null)
+            {
+                <br />
+                <div class="alert alert-success"><b>@ViewData["porukaUspjesno"]</b></div>
+            }
+            else if (ViewData["porukaNeuspjesno"] != null)
+            {
+                <br />
+                <div class="alert alert-danger">
+                    <b>@ViewData["porukaNeuspjesno"]</b><br />
+                    <b>@ViewData["nazivGreska"]</b><br />
+                </div>
+            }
+        </div>
+    </div>
+</form>

@@ -1,0 +1,95 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@model List<VrstaTreninga>
+
+@{
+    ViewData["Title"] = "Vrste treninga";
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+}
+
+<div class="row">
+    <div class="col-sm-12 col-lg-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Upravljanje vrstama treninga</h3>
+            </div>
+            <div class="box-body">
+                <table id="example" class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Naziv</th>
+                            <th class="text-center">Aktivnih termina</th>
+                            <th class="text-center">Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model)
+                        {
+                            <tr>
+                                <td>@v.Naziv</td>
+                                @{
+                                    int brojTermina = _ctx.Termini.Count(x => x.VrstaTreningaId == v.VrstaTreningaId);
+                                }
+                                <td class="text-center">
+                                    @brojTermina
+                                </td>
+                                <td class="text-center">
+                                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/VrstaTreninga/Uredi?id=@v.VrstaTreningaId" data-ajax-update="#vrstaTreninga" class="btn btn-warning glyphicon glyphicon-edit"></a>
+                                    @if (brojTermina == 0)
+                                    {
+                                        <a asp-action="Obrisi" asp-route-id="@v.VrstaTreningaId" class="btn btn-danger glyphicon glyphicon-trash"></a>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" value="" class="btn btn-danger" disabled="disabled">
+                                            <span>
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                            </span>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-offset-5">
+                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/VrstaTreninga/Dodaj" data-ajax-update="#vrstaTreninga" class="btn btn-success">Dodaj</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="vrstaTreningaDodaj" class="col-sm-12 col-lg-6" style="display: none;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Dodaj/Uredi vrstu treninga</h3>
+            </div>
+
+            <div class="box-body">
+                <div id="vrstaTreninga"></div>
+            </div>
+
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-12 text-right padding-r-30">
+                        <a href="/ModulRecepcionar/VrstaTreninga/Index" class="btn btn-default">Zatvori</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function prikaziDiv() {
+        $('#vrstaTreningaDodaj').show();
+    }
+
+    function zatvoriDialog() {
+        $('#vrstaTreningaDodaj').hide();
+    }
+</script>

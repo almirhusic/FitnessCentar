@@ -1,0 +1,86 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@model List<Termin>
+
+@{
+    ViewData["Title"] = "Termini";
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Upravljanje terminima</h3>
+            </div>
+            <div class="box-body">
+                <table id="example" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Datum termina</th>
+                            <th>Početak</th>
+                            <th>Kraj</th>
+                            <th>Trener</th>
+                            <th>Vrsta treninga</th>
+                            <th>Sala</th>
+                            <th class="text-center">Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in Model)
+                        {
+                        <tr>
+                            <td>@t.DatumTermina.ToShortDateString()</td>
+                            <td>@t.VrijemePocetak</td>
+                            <td>@t.VrijemeKraj</td>
+                            <td>@t.Trener.Zaposlenik.Ime @t.Trener.Zaposlenik.Prezime</td>
+                            <td>@t.VrstaTreninga.Naziv</td>
+                            <td>@t.Sala.Naziv</td>
+                            <td class="text-center">
+                                <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/Termin/Uredi?id=@t.TerminId" data-ajax-update="#termin" class="btn btn-warning glyphicon glyphicon-edit"></a>
+                                <a asp-action="Obrisi" asp-route-id="@t.TerminId" class="btn btn-danger glyphicon glyphicon-trash"></a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-offset-5">
+                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/Termin/Dodaj" data-ajax-update="#termin" class="btn btn-success">Dodaj</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="terminDodaj" class="col-sm-6" style="display: none;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Novi termin</h3>
+            </div>
+
+            <div class="box-body">
+                <div id="termin"></div>
+            </div>
+
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-12 text-right padding-r-30">
+                        <a href="/ModulRecepcionar/Termin/Index" class="btn btn-default">Zatvori</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function prikaziDiv() {
+        $('#terminDodaj').show();
+    }
+
+    function zatvoriDialog() {
+        $('#terminDodaj').hide();
+    }
+</script>

@@ -1,0 +1,19 @@
+﻿@using Fitness_Centar.Web.Areas.ModulClan.ViewModels
+@model UserInfoVM
+@{ Layout = null; }
+
+<div data-ajax="true" data-ajax-method="post" data-ajax-update="#user-info">
+    <img class="profile-user-img img-responsive img-circle" src="~/AdminLTE/dist/img/avatar5.png" alt="User profile picture" />
+    <h3 class="profile-username text-center">@Model.ImePrezime</h3>
+    @{int d = DateTime.Now.Year - Model.DatumRodjenja.Year; }
+    <p class="text-muted text-center">@d, @Model.Grad</p>
+    <ul class="list-group list-group-unbordered">
+        <li class="list-group-item">
+            <b>Followers</b><a class="pull-right">@Model.Followers</a>
+        </li>
+        <li class="list-group-item">
+            <b>Following</b><a class="pull-right">@Model.Following</a>
+        </li>
+    </ul>
+    <a href="/ModulClan/Clan/Profil?id=@Model.ClanId" class="btn btn-primary btn-block">Profil</a>
+</div>

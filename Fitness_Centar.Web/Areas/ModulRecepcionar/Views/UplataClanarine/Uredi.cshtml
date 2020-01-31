@@ -1,0 +1,80 @@
+﻿@using Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels
+@model UplataClanarineDodajVM
+
+
+@{
+    List<SelectListItem> listClanovi = new List<SelectListItem>();
+    if(Model.Clanovi.Count != 1)
+    {
+        listClanovi.Add(new SelectListItem { Value = null, Text = "Odaberite člana" });
+    }
+    listClanovi.AddRange(Model.Clanovi.Select(x => new SelectListItem
+    {
+        Text = x.Ime + " " + x.Prezime,
+        Value = x.ClanId.ToString()
+    }).ToList());
+
+    Layout = null;
+}
+
+<form method="post" data-ajax-url="/ModulRecepcionar/UplataClanarine/Snimi" data-ajax="true" data-ajax-method="post" data-ajax-update="#uplata">
+    @Html.HiddenFor(x => x.UplataClanarineId)
+
+    <div class="form-group">
+        <label for="Iznos" class="col-sm-5 control-label">Iznos</label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.Iznos, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Iznos)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="DatumUplate" class="col-sm-5 control-label">Datum uplate</label>
+        <div class="col-sm-7">
+            @if (Model.Clanovi.Count != 1)
+            {
+                @Html.TextBoxFor(x => x.DatumUplate, DateTime.Now.ToShortDateString(), new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.DatumUplate)
+
+            }
+            else
+            {
+                @Html.TextBoxFor(x => x.DatumUplate, "{0:MM/dd/yyyy}", new { @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(x => x.DatumUplate)
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="ClanId" class="col-sm-5 control-label">Član</label>
+        <div class="col-sm-7">
+            @Html.DropDownListFor(x => x.ClanId, listClanovi, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.ClanId)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12 text-right margin-top-9">
+            <input type="submit" value="Sačuvaj" class="btn btn-success" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            @if (ViewData["porukaUspjesno"] != null)
+            {
+                <br />
+                <div class="alert alert-success">
+                    <b>@ViewData["porukaUspjesno"]</b>
+                </div>
+            }
+            else if (ViewData["porukaNeuspjesno"] != null)
+            {
+                <br />
+                <div class="alert alert-danger">
+                    <b>@ViewData["porukaNeuspjesno"]</b>
+                </div>
+            }
+        </div>
+    </div>
+</form>

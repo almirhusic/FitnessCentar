@@ -1,0 +1,183 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Helper
+@using Microsoft.AspNetCore.Http
+@{
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+    Korisnik korisnik = Context.GetLogiraniKorisnik();
+    string user = "", notCountTxt = "";
+    int uId = 0, notCount = 0;
+    if (korisnik.Trener != null)
+    {
+        user = korisnik.Trener.Zaposlenik.Ime + " " + korisnik.Trener.Zaposlenik.Prezime;
+    }
+    if (korisnik.Zaposlenik != null)
+    {
+        user = korisnik.Zaposlenik.Ime + " " + korisnik.Zaposlenik.Prezime;
+    }
+    if (korisnik.Clan != null)
+    {
+        uId = korisnik.Clan.ClanId;
+        user = korisnik.Clan.Ime + " " + korisnik.Clan.Prezime;
+        notCount = _ctx.Notifikacije.Where(x => x.DestClanId == uId && !x.Seen).Count();
+        if (notCount != 0)
+        {
+            notCountTxt = notCount.ToString();
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Fitness Centar</title>
+
+    <environment include="Development,Production">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="~/AdminLTE/bc/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/AdminLTE/bc/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="~/AdminLTE/bc/Ionicons/css/ionicons.min.css">
+        <link rel="stylesheet" href="~/AdminLTE/bc/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="~/AdminLTE/bc/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" />
+        <link rel="stylesheet" href="~/AdminLTE/dist/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="~/AdminLTE/dist/css/skins/skin-blue.min.css">
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development,Production">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+    </environment>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+            <a href="/" class="logo">
+                <span class="logo-mini"><b>F</b>C</span>
+                <span class="logo-lg"><b>Fitness </b>Centar</span>
+            </a>
+
+            <nav class="navbar navbar-static-top" role="navigation">
+
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+
+                
+                <div class="navbar-custom-menu">
+                    <button type="button" class="btn btn-notification">
+                        <i class="fa fa-bell-o"></i> <span class="notification-custom">@notCountTxt</span>
+                    </button>
+                    <a href="@Url.Action("Logout", "Autentifikacija", new {area = ""})" class="btn btn-odjava">Odjava</a>
+                </div>
+            </nav>
+        </header>
+
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="~/AdminLTE/dist/img/avatar5.png" class="img-circle user-image" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p>Dobro došli, </p>
+                        <p class="user-name">@user</p>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">FITNESS CENTAR</li>
+                    @if (korisnik != null)
+                    {
+                        if (korisnik.Zaposlenik != null && korisnik.Zaposlenik.IsRecepcionar)
+                        {
+                            @Html.Partial("_UlogaRecepcionar")
+                        }
+                        else if (korisnik.Trener != null)
+                        {
+                            @Html.Partial("_UlogaTrener")
+                        }
+                        else if (korisnik.Clan != null)
+                        {
+                            @Html.Partial("_UlogaClan")
+                        }
+                        else
+                        {
+                            @Html.Partial("_LayoutPrijava")
+                        }
+                    }
+                </ul>
+            </section>
+        </aside>
+
+        <div class="content-wrapper">
+            <section class="content container-fluid">
+
+                @RenderBody()
+
+            </section>
+        </div>
+
+        <footer class="main-footer">
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="https://fit.ba" target="_blank">FIT</a>.</strong> All rights reserved.
+        </footer>
+    </div>
+
+    <environment include="Development,Production">
+        <script src="~/AdminLTE/bc/jquery/dist/jquery.min.js"></script>
+        <script src="~/AdminLTE/bc/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/AdminLTE/dist/js/adminlte.min.js"></script>
+        <script src="~/lib/jquery.unobtrusive-ajax/jquery.unobtrusive-ajax.js"></script>
+
+        <!-- Data Tables Required scripts-->
+        <script src="~/AdminLTE/bc/datatables.net/js/jquery.dataTables.min.js"></script>
+        <script src="~/AdminLTE/bc/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <!-- /// -->
+        <script src="~/AdminLTE/bc/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+        <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+        <script src="~/js/lajkovi.js"></script>
+        <script src="~/js/komentari.js"></script>
+        <script src="~/js/followeri.js"></script>
+        <script>
+            $(function () {
+                if ($(".message").is(":visible")) {
+                    $(".message").delay(2500).fadeOut('slow');
+                }
+            });
+
+            $(function () {
+                $('.date-picker')
+                    .datepicker({
+                        format: 'dd/mm/yyyy'
+                    });
+            });
+
+            $(document).ready(function () {
+                $('#example').DataTable();
+            });
+        </script>
+    </environment>
+
+    <environment exclude="Development,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

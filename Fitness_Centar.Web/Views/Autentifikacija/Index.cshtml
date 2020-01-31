@@ -1,0 +1,62 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.ViewModels
+@using Fitness_Centar.Web.Helper
+@model AutentifikacijaVM
+@{
+    ViewBag.Title = "Prijava na Fitness Centar IS";
+
+    Layout = "~/Views/Shared/_LayoutPrijava.cshtml";
+
+    List<SelectListItem> listUloge = new List<SelectListItem>();
+    listUloge.Add(new SelectListItem { Value = null, Text = "Odaberite ulogu" });
+    listUloge.Add(new SelectListItem { Value = "Clan", Text = "Član" });
+    listUloge.Add(new SelectListItem { Value = "Recepcionar", Text = "Recepcionar" });
+    listUloge.Add(new SelectListItem { Value = "Trener", Text = "Trener" });    
+}
+
+<div class="login-box-custom">
+    <div class="box-info">
+        <div style="padding-top: 5%">
+            <h3 class="text-center" style="color: black">
+                <strong>@ViewBag.Title</strong><br />
+            </h3>
+        </div>
+        <div class="error-message">
+            @if (TempData["error_poruka"] != null)
+            {
+                <label class="field-validation-error">@TempData["error_poruka"] </label>
+            }
+            @if (ViewData["porukaGreska"] != null)
+            {
+                <label class="field-validation-error">@ViewData["porukaGreska"] </label>
+            }
+        </div>
+        <div class="login-form">
+            @using (Html.BeginForm("Login", "Autentifikacija"))
+            {
+                <label for="KorisnickoIme">Korisničko ime: </label> @Html.ValidationMessageFor(model => model.KorisnickoIme, "", new { })
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.KorisnickoIme, new { @class = "form-control", @style = "border-radius: 7px", @placeholder = "Unesite Vaše korisničko ime" })
+                </div>
+
+                <label for="Lozinka">Lozinka: </label> @Html.ValidationMessageFor(model => model.Lozinka, "", new { })
+                <div class="form-group">
+                    @Html.PasswordFor(model => model.Lozinka, new { @class = "form-control", @style = "border-radius: 7px", @placeholder = "Unesite Vašu lozinku" })
+                </div>
+
+                <label for="Uloga">Uloga: </label> @Html.ValidationMessageFor(x => x.Uloga)
+                <div class="form-group">
+                    @Html.DropDownListFor(x => x.Uloga, listUloge, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label for="ZapamtiMe">Zapamti me: </label>
+                    @Html.CheckBoxFor(x => x.ZapamtiMe, new { @style = "width: 16px; height: 16px" })
+                </div>
+
+                <input type="submit" class="btn btn-success" value="Prijava" />
+            }
+        </div>
+    </div>
+</div>

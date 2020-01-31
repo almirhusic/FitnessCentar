@@ -1,0 +1,202 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulClan.ViewModels
+@using Fitness_Centar.Web.Helper
+@model List<ProfilVM>
+
+@{
+    ViewData["Title"] = "Detalji člana";
+    Clan c = (Clan)ViewData["clan"];
+    int followers = (int)ViewData["followers"];
+    int following = (int)ViewData["following"];
+
+
+    ViewData["Title"] = "Objave";
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+
+    Korisnik korisnik = Context.GetLogiraniKorisnik();
+    int userId = -1;
+    if (korisnik.Trener != null)
+    {
+        userId = korisnik.Trener.TrenerId;
+    }
+    if (korisnik.Zaposlenik != null)
+    {
+        userId = korisnik.Zaposlenik.ZaposlenikId;
+    }
+    if (korisnik.Clan != null)
+    {
+        userId = korisnik.Clan.ClanId;
+    }
+}
+
+<div class="row">
+    <div class="col-lg-3 col-sm-12">
+        <div class="box box-info">
+            <div class="box-body box-profile">
+                <img class="profile-user-img img-responsive img-circle" src="~/AdminLTE/dist/img/avatar5.png" alt="User profile picture" />
+                <h3 class="profile-username text-center">@c.Ime @c.Prezime</h3>
+                @{int d = DateTime.Now.Year - c.DatumRodjenja.Year; }
+                <p class="text-muted text-center">@d, @c.Grad.Naziv</p>
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Followers</b><a class="pull-right">@followers</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Following</b><a class="pull-right">@following</a>
+                    </li>
+                </ul>
+                @{
+                    if (userId != c.ClanId)
+                    {
+                        Followers f = _ctx.Followeri.Where(x => x.PratiteljClanId == userId && x.ZapraceniClanId == c.ClanId).FirstOrDefault();
+                        if (f != null)
+                        {
+                            <a href="#" data-pratiteljid="@userId" data-zapraceniid="@c.ClanId" class="btn btn-primary btn-block btnFollow following following-@c.ClanId">
+                                Following
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" data-pratiteljid="@userId" data-zapraceniid="@c.ClanId" class="btn btn-primary btn-block btnFollow follow follow-@c.ClanId">
+                                Follow
+                            </a>
+                        }
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="box box-info custom">
+            <div class="box-header with-border">
+                <h3 class="box-title">O meni</h3>
+            </div>
+            <div class="box-body">
+                <strong><i class="fa fa-calendar-plus-o"></i> Učlanjen: </strong>
+                <p class="text-muted">@c.DatumUclanjivanja.ToShortDateString()</p>
+                <hr>
+                <strong><i class="fa fa-map-marker margin-r-5"></i> Adresa</strong>
+                <p class="text-muted">@c.Adresa, @c.Grad.Naziv</p>
+                <hr>
+                <strong><i class="fa fa-envelope-o margin-r-5"></i> Email</strong>
+                <p>@c.Email</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-9 col-sm-12">
+        <div class="box box-info custom aktivnosti">
+            <div class="box-header with-border padding-l-25">
+                <h3 class="box-title">Objave</h3>
+            </div>
+
+            <div class="box-body">
+                @if(Model.Count == 0)
+                {
+                    <span>Nema objava za prikaz</span>
+                }
+                @foreach (var post in Model)
+                {
+                    int pId = post.Objava.ObjaveClanovaId + 148;
+                    <div id="post-id-@pId" data-uid="@userId" class="post">
+                        <div class="user-info">
+                            <img class="img-circle img-bordered-sm" src="~/AdminLTE/dist/img/avatar5.png" />
+                            <div class="desc">
+                                <span id="@userId" class="username">@post.Objava.Clan.Ime @post.Objava.Clan.Prezime</span>
+                                <span class="post-description">Objavljeno: @post.Objava.DatumObjave</span>
+                            </div>
+                            @{
+                                if (userId == post.Objava.ClanId)
+                                {
+                                    <a href="/ModulClan/Clan/ObrisiPost?id=@post.Objava.ObjaveClanovaId" class="delete-post pull-right margin-l-15">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+                                }
+                            }
+                        </div>
+
+                        <div class="post-content text-justify">
+                            <p>@post.Objava.Sadrzaj</p>
+                        </div>
+
+                        <div class="post-footer">
+                            <div>
+                                @{ int n = post.Objava.ObjaveClanovaId + 1594; }
+                                @{
+                                    var cl = post.Lajkovi.Where(x => x.ClanId == userId && x.ObjaveClanovaId == post.Objava.ObjaveClanovaId).FirstOrDefault();
+                                    if (post.Lajkovi.Count() > 0 && cl?.ClanId == userId)
+                                    {
+                                        <a href="" id="post-@n" class="likeButton link-black liked" data-postid="@post.Objava.ObjaveClanovaId" data-userid="@userId">
+                                            <i class="fa fa-thumbs-o-up margin-r-5"></i>
+                                            Like
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="" id="post-@n" class="likeButton link-black" data-postid="@post.Objava.ObjaveClanovaId" data-userid="@userId">
+                                            <i class="fa fa-thumbs-o-up margin-r-5"></i>
+                                            Like
+                                        </a>
+                                }
+                                }
+                                <div class="broj-lajkova" id="post-@n-brLajkova">
+                                    @post.Lajkovi.Count()
+                                </div>
+                                <span class="arrow_box lajkClanovi l-@n">
+                                    @post.KoJeLajkao
+                                </span>
+
+                                <div class="comment pull-right">
+                                    <a href="#post-id-@pId" data-id="@pId" class="showComments">
+                                        <i class="fa fa-comments-o margin-r-5"></i>
+                                        Komentari <span class="brKomentara-@pId">(@post.BrojKomentara)</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                @{ int j = post.Objava.ObjaveClanovaId + 498; }
+                                <input type="text" name="komentar-@j" class="form-control" placeholder="Komentiraj...">
+                                <span class="input-group-btn">
+                                    <button type="button" data-userid="@userId" data-postid="@post.Objava.ObjaveClanovaId" class="commentButton btn btn-info btn-flat">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </span>
+                            </div>
+
+                            <div class="row">
+                                <div id="komentari-section-@pId" class="col-sm-12 komentari-section">
+                                    @foreach (var k in post.Komentari)
+                                    {
+                                        <div id="komentar-@k.KomentariObjavaClanovaId" style="display: block;">
+                                            <div class="komentar">
+                                                <div class="user-info">
+                                                    <span class="user">@k.Clan.Ime @k.Clan.Prezime</span>
+                                                    <span class="publish-date">@k.DatumObjaveKomentara</span>
+                                                    @{
+                                                        if (userId == k.ClanId)
+                                                        {
+                                                            <a href="#@post.Objava.ObjaveClanovaId" data-kid="@k.KomentariObjavaClanovaId" data-uid="@userId" data-pid="@pId" class="delete-comment pull-right margin-l-15">
+                                                                <i class="fa fa-close"></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                </div>
+                                                <div class="comment-text">
+                                                    <span>
+                                                        @k.SadrzajKomentara
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

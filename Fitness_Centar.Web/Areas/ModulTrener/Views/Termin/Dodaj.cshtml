@@ -1,0 +1,108 @@
+﻿@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulTrener.ViewModels
+@model TerminUrediVM
+
+@{
+    Layout = null;
+
+    List<SelectListItem> listSale = new List<SelectListItem>();
+    listSale.Add(new SelectListItem { Value = "0", Text = "Odaberite salu" });
+    listSale.AddRange(Model.SaleList.Select(x => new SelectListItem
+    {
+        Text = x.Naziv,
+        Value = x.SalaId.ToString()
+    }).ToList());
+
+    List<SelectListItem> listVrstaTreninga = new List<SelectListItem>();
+    listVrstaTreninga.Add(new SelectListItem { Value = "0", Text = "Odaberite vrstu treninga" });
+    listVrstaTreninga.AddRange(Model.VrsteTreningaList.Select(x => new SelectListItem
+    {
+        Text = x.Naziv,
+        Value = x.VrstaTreningaId.ToString()
+    }).ToList());
+}
+
+<form method="post" data-ajax-url="/ModulTrener/Termin/Snimi" data-ajax="true" data-ajax-method="post" data-ajax-update="#termin">
+    @Html.HiddenFor(x => x.TerminId)
+    @Html.HiddenFor(x => x.TrenerId)
+
+    <div class="form-group">
+        <label for="DatumTermina" class="col-sm-5 control-label">Datum termina</label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.DatumTermina, "{0:dd/MM/yyyy}", new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.DatumTermina)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="VrijemePocetak" class="col-sm-5 control-label">Vrijeme početka</label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.VrijemePocetak, new { @class = "form-control", @placeholder = "hh:mm" })
+            @Html.ValidationMessageFor(x => x.VrijemePocetak)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="VrijemeKraj" class="col-sm-5 control-label">Vrijeme kraja</label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.VrijemeKraj, new { @class = "form-control", @placeholder = "hh:mm" })
+            @Html.ValidationMessageFor(x => x.VrijemeKraj)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="TrenerId" class="col-sm-5 control-label">Trener</label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.ImePrezime, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="VrstaTreningaId" class="col-sm-5 control-label">Vrsta treninga</label>
+        <div class="col-sm-7">
+            @Html.DropDownListFor(x => x.VrstaTreningaId, listVrstaTreninga, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.VrstaTreningaId)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="SalaId" class="col-sm-5 control-label">Sala</label>
+        <div class="col-sm-7">
+            @Html.DropDownListFor(x => x.SalaId, listSale, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.SalaId)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12 text-right margin-top-9">
+            <input type="submit" value="Snimi" class="btn btn-success" />
+        </div>
+    </div>    
+
+    <div class="row">
+        <div class="col-sm-12">
+            @if (ViewData["porukaUspjesno"] != null)
+            {
+                <br />
+                <div class="alert alert-success">
+                    <b>@ViewData["porukaUspjesno"]</b><br />
+                </div>
+            }
+            else
+            {
+                if (ViewData["porukaNeuspjesno"] != null)
+                {
+                    <br /><br />
+                    <div class="alert alert-danger">
+                        <b>@ViewData["porukaNeuspjesno"]</b><br />
+                        <b>@ViewData["vrijemeGreska"]</b>
+                        <b>@ViewData["salaGreska"]</b>
+                        <b>@ViewData["trenerGreska"]</b>
+                        <b>@ViewData["greskaSatiTermina"]</b>
+                        <b>@ViewData["datumTerminaGreska"]</b>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</form>

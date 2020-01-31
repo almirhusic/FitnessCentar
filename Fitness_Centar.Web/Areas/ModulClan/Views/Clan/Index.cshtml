@@ -1,0 +1,215 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulClan.ViewModels
+@using Fitness_Centar.Web.Helper
+
+@model List<TimelineVM>
+@{
+    ViewData["Title"] = "Objave";
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+
+    Korisnik korisnik = Context.GetLogiraniKorisnik();
+    int userId = -1;
+    if (korisnik.Trener != null)
+    {
+        userId = korisnik.Trener.TrenerId;
+    }
+    if (korisnik.Zaposlenik != null)
+    {
+        userId = korisnik.Zaposlenik.ZaposlenikId;
+    }
+    if (korisnik.Clan != null)
+    {
+        userId = korisnik.Clan.ClanId;
+    }
+}
+
+<div class="row">
+    <div class="col-sm-12 col-md-9 col-lg-9">
+        <div class="box box-info custom">
+            <div class="box-header with-border padding-l-25">
+                <h3 class="box-title">Nova objava</h3>
+            </div>
+            <form method="post" action="/ModulClan/Clan/DodajObjavu">
+                <div class="box-body">
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            @Html.TextArea("Sadrzaj", new { @class = "form-control objava-textarea", @rows = "4", @placeholder = "Napišite vašu objavu..." })
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-12 text-right padding-r-30">
+                            <input type="submit" value="Objavi" class="btn btn-success" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="box box-info custom aktivnosti">
+            <div class="box-header with-border padding-l-25">
+                <h3 class="box-title">Aktivnosti članova</h3>
+            </div>
+
+            <div class="box-body">
+                @foreach (var post in Model)
+                {
+                    int pId = post.Objava.ObjaveClanovaId + 148;
+                    <div id="post-id-@pId" data-uid="@userId" class="post">
+                        <div class="user-info">
+                            <img class="img-circle img-bordered-sm" src="~/AdminLTE/dist/img/avatar5.png" />
+                            <div class="desc">
+                                <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulClan/Clan/UserInfo?id=@post.Objava.ClanId" data-ajax-update="#user-info">
+                                    <span id="@userId" class="username">@post.Objava.Clan.Ime @post.Objava.Clan.Prezime</span>
+                                </a>
+                                @{
+                                    Followers ff = _ctx.Followeri.Where(x => x.PratiteljClanId == userId && x.ZapraceniClanId == post.Objava.ClanId).FirstOrDefault();
+                                    if (userId != post.Objava.ClanId)
+                                    {
+                                        if (ff != null)
+                                        {
+                                            <a href="#" data-pratiteljid="@userId" data-zapraceniid="@post.Objava.ClanId" class="btnFollow following following-@post.Objava.ClanId">
+                                                Following
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" data-pratiteljid="@userId" data-zapraceniid="@post.Objava.ClanId" class="btnFollow follow follow-@post.Objava.ClanId">
+                                                Follow
+                                            </a>
+                                        }
+                                    }
+                                }
+                                <span class="post-description">Objavljeno: @post.Objava.DatumObjave</span>
+                            </div>
+                            @{
+                                if (userId == post.Objava.ClanId)
+                                {
+                                    <a href="/ModulClan/Clan/ObrisiPost?id=@post.Objava.ObjaveClanovaId" class="delete-post pull-right margin-l-15">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+                                }
+                            }
+                        </div>
+
+                        <div class="post-content text-justify">
+                            <p>@post.Objava.Sadrzaj</p>
+                        </div>
+
+                        <div class="post-footer">
+                            <div>
+                                @{ int n = post.Objava.ObjaveClanovaId + 1594; }
+                                @{
+                                    var c = _ctx.Lajkovi.Where(x => x.ClanId == userId && x.ObjaveClanovaId == post.Objava.ObjaveClanovaId).FirstOrDefault();
+                                    if (c != null && c.ClanId == userId)
+                                    {
+                                        <a href="" id="post-@n" class="likeButton link-black liked" data-postid="@post.Objava.ObjaveClanovaId" data-userid="@userId">
+                                            <i class="fa fa-thumbs-o-up margin-r-5"></i>
+                                            Like
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="" id="post-@n" class="likeButton link-black" data-postid="@post.Objava.ObjaveClanovaId" data-userid="@userId">
+                                            <i class="fa fa-thumbs-o-up margin-r-5"></i>
+                                            Like
+                                        </a>
+                                    }
+                                }
+                                <div class="broj-lajkova" id="post-@n-brLajkova">
+                                    @post.Lajkovi.Count()
+                                </div>
+                                <span class="arrow_box lajkClanovi l-@n">
+                                    @post.KoJeLajkao
+                                </span>
+
+                                <div class="comment pull-right">
+                                    <a href="#post-id-@pId" data-id="@pId" class="showComments">
+                                        <i class="fa fa-comments-o margin-r-5"></i>
+                                        Komentari <span class="brKomentara-@pId">(@post.BrojKomentara)</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                @{ int j = post.Objava.ObjaveClanovaId + 498; }
+                                <input type="text" name="komentar-@j" class="form-control" placeholder="Komentiraj...">
+                                <span class="input-group-btn">
+                                    <button type="button" data-userid="@userId" data-postid="@post.Objava.ObjaveClanovaId" class="commentButton btn btn-info btn-flat">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </span>
+                            </div>
+
+                            <div class="row">
+                                <div id="komentari-section-@pId" class="col-sm-12 komentari-section">
+                                    @foreach (var k in post.Komentari)
+                                    {
+                                        <div id="komentar-@k.KomentariObjavaClanovaId" style="display: block;">
+                                            <div class="komentar">
+                                                <div class="user-info">
+                                                    <span class="user">@k.Clan.Ime @k.Clan.Prezime</span>
+                                                    <span class="publish-date">@k.DatumObjaveKomentara</span>
+                                                    @{
+                                                        if (userId == k.ClanId)
+                                                        {
+                                                            <a href="#@post.Objava.ObjaveClanovaId" data-kid="@k.KomentariObjavaClanovaId" data-uid="@userId" data-pid="@pId" class="delete-comment pull-right margin-l-15">
+                                                                <i class="fa fa-close"></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                </div>
+                                                <div class="comment-text">
+                                                    <span>
+                                                        @k.SadrzajKomentara
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div id="userInfo" class="col-lg-3 col-sm-12 no-sticky" style="display: none;">
+        <div class="box box-info">
+            <div class="box-body box-profile">
+                <div id="user-info"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.onscroll = function () { myFunction() };
+
+    var userInfo = document.getElementById("userInfo");
+    var sticky = userInfo.offsetTop;
+
+    function myFunction() {
+        if (window.pageYOffset > sticky) {
+            userInfo.classList.add("sticky");
+        } else {
+            userInfo.classList.remove("sticky");
+        }
+    }
+    
+
+    function prikaziDiv() {
+        $('#userInfo').show();
+    }
+
+    function sakrijDiv() {
+        $('#userInfo').hide();
+    }
+</script>

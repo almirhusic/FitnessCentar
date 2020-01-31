@@ -1,0 +1,166 @@
+﻿@using Fitness_Centar.Data.Models
+@model Clan
+@{ 
+    ViewData["Title"] = "Detalji člana";
+}
+<div class="row">
+    <div class="col-sm-12 col-lg-7">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <div class="col-sm-6 margin-top-9">
+                    <i class="fa fa-pencil-square-o"></i>
+                    <h3 class="box-title">Detalji člana <b>@Model.Ime @Model.Prezime</b></h3>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <a href="~/Reports/Rpt_ClanUplate.aspx?ClanId=@Model.ClanId" target="_blank" class="btn btn-warning">
+                        Izvještaj o uplatama
+                    </a>
+                </div>
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Ime</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.Ime, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Prezime</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.Prezime, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Korisničko ime</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.KorisnickoIme, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Lozinka</label>
+                            <div class="col-sm-6">
+                                @Html.PasswordFor(x => x.Lozinka, new { @class = "form-control", value = Model.Lozinka, @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">JMBG</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.JMBG, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Datum rođenja</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.DatumRodjenja, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Adresa</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.Adresa, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Telefon</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.Telefon, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Email</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Spol</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.Spol, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Datum učlanjivanja</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.DatumUclanjivanja, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Broj članske kartice</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.BrojClanskeKartice, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Vrsta članarine</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.VrstaClanarine.Naziv, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-6 control-label">Grad</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(x => x.Grad.Naziv, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-footer text-center">
+                <a href="/ModulRecepcionar/Clan/Uredi?id=@Model.ClanId" class="btn btn-warning">Uredi</a>
+                <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/UplataClanarine/Dodaj?id=@Model.ClanId" data-ajax-update="#divUplataClan" class="btn btn-success">Nova uplata</a>
+                <a href="/ModulRecepcionar/Clan/Index" class="btn btn-default">Zatvori</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="clanUplata" class="col-sm-12 col-lg-5" style="display: none;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Nova uplata za člana <b>@Model.Ime @Model.Prezime</b></h3>
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="divUplataClan"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-12 text-right padding-r-30">
+                        <input type="button" onclick="zatvoriDialog()" value="Zatvori" class="btn btn-default pull-right" />
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function prikaziDiv() {
+        $('#clanUplata').show();
+    }
+
+    function zatvoriDialog() {
+        $('#clanUplata').hide();
+    }    
+</script>

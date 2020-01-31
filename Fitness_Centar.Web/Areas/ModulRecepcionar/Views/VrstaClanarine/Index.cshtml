@@ -1,0 +1,95 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels
+@model List<VrstaClanarine>
+
+@{
+    ViewData["Title"] = "Vrste članarina";
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+}
+
+<div class="row">
+    <div class="col-sm-12 col-lg-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Upravljanje vrstama članarina</h3>
+            </div>
+            <div class="box-body">
+                <table id="example" class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Naziv</th>
+                            <th>Cijena (KM)</th>
+                            <th class="text-center">Broj članova</th>
+                            <th class="text-center">Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model)
+                        {
+                        <tr>
+                            <td>@v.Naziv</td>
+                            <td>@v.Cijena</td>
+                            @{
+                                int Ukupno = _ctx.Clanovi.Count(x => x.VrstaClanarineId == v.VrstaClanarineId);
+                            }
+                            <td class="text-center">@Ukupno</td>
+                            <td class="text-center">
+                                <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/VrstaClanarine/Uredi?id=@v.VrstaClanarineId" data-ajax-update="#vrstaClanarine" class="btn btn-warning glyphicon glyphicon-edit"></a>
+                                @if (Ukupno == 0)
+                                {
+                                    <a asp-action="Obrisi" asp-route-id="@v.VrstaClanarineId" class="btn btn-danger glyphicon glyphicon-trash"></a>
+                                }
+                                else
+                                {
+                                    <button type="button" value="" class="btn btn-danger" disabled="disabled">
+                                        <span>
+                                            <i class="glyphicon glyphicon-trash"></i>
+                                        </span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-offset-5">
+                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/VrstaClanarine/Dodaj" data-ajax-update="#vrstaClanarine" class="btn btn-success">Dodaj</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="vrstaClanarineDodaj" class="col-sm-12 col-lg-6" style="display: none;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Dodaj/Uredi vrstu članarine</h3>
+            </div>
+
+            <div class="box-body">
+                <div id="vrstaClanarine"></div>
+            </div>
+
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-12 text-right padding-r-30">
+                        <a href="/ModulRecepcionar/VrstaClanarine/Index" class="btn btn-default">Zatvori</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function prikaziDiv() {
+        $('#vrstaClanarineDodaj').show();
+    }
+
+    function zatvoriDialog() {
+        $('#vrstaClanarineDodaj').hide();
+    }
+</script>

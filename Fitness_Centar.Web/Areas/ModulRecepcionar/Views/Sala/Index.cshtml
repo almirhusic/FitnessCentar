@@ -1,0 +1,97 @@
+﻿@using Fitness_Centar.Web.Areas.ModulRecepcionar.ViewModels
+@using Fitness_Centar.Data.Models
+@using Fitness_Centar.Data
+
+@model List<Sala>
+
+@{
+    ViewData["Title"] = "Sale";
+    MyContext _ctx = (MyContext)ViewData["_ctx"];
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Upravljanje salama</h3>
+            </div>
+            <div class="box-body">
+                <table id="example" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Naziv</th>
+                            <th class="text-center">Broj mjesta</th>
+                            <th class="text-center">Aktivnih termina</th>
+                            <th class="text-center">Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model)
+                        {
+                            <tr>
+                                <td>@s.Naziv</td>
+                                <td class="text-center">@s.BrojMjesta</td>
+                                @{
+                                    int ukupno = _ctx.Termini.Where(x => x.DatumTermina >= DateTime.Today).Count(x => x.SalaId == s.SalaId);
+                                }
+                                <td class="text-center">@ukupno</td>
+                                <td class="text-center">
+                                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/Sala/Uredi?id=@s.SalaId" data-ajax-update="#sala" class="btn btn-warning glyphicon glyphicon-edit"></a>
+                                    @if (ukupno != 0)
+                                    {
+                                        <button type="button" class="btn btn-danger" disabled="disabled">
+                                            <span>
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                            </span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Obrisi" asp-route-id="@s.SalaId" class="btn btn-danger glyphicon glyphicon-trash"></a>
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-offset-5">
+                    <a href="" onclick="prikaziDiv()" data-ajax="true" data-ajax-url="/ModulRecepcionar/Sala/Dodaj" data-ajax-update="#sala" class="btn btn-success">Dodaj</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="salaDodaj" class="col-sm-6" style="display: none;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">Dodajte novi zapis</h3>
+            </div>
+
+            <div class="box-body">
+                <div id="sala"></div>
+            </div>
+
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-12 text-right padding-r-30">
+                        <a href="/ModulRecepcionar/Sala/Index" class="btn btn-default">Zatvori</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function prikaziDiv() {
+        $('#salaDodaj').show();
+    }
+
+    function zatvoriDialog() {
+        $('#salaDodaj').hide();
+    }
+</script>

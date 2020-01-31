@@ -1,0 +1,155 @@
+﻿@using Fitness_Centar.Data
+@using Fitness_Centar.Data.Models
+@model HomeIndexVM
+@{
+    ViewData["Title"] = "Početna";
+    MyContext _ctx = (MyContext)ViewData["context"];
+}
+
+<div class="col-sm-12 col-lg-6">
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Posljednji učlanjeni članovi</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="box-body no-padding">
+            <ul class="users-list clearfix">
+                @foreach (Clan o in Model.Clanovi)
+                {
+                    <li>
+                        <img src="~/AdminLTE/dist/img/no_avatar.jpg" alt="User Image">
+                        <a class="users-list-name" href="/ModulRecepcionar/Clan/Detalji?id=@o.ClanId">@o.Ime @o.Prezime</a>
+                        <span class="users-list-date">@o.DatumUclanjivanja.ToShortDateString()</span>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="box-footer text-center">
+            <a href="/ModulRecepcionar/Clan" class="btn-block">Pregled svih članova</a>
+        </div>
+    </div>
+</div>
+
+
+<!--=== Termini ===-->
+<div class="col-sm-12 col-lg-6">
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Današnji termini</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="box-body no-padding">
+            <table class="table table-hover table-bordered">
+                @if (Model.Termini.Count == 0)
+                {
+                    <tr text-align="center">
+                        <td colspan="5">
+                            Nema termina za danas.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="home-table-thead">
+                        <td>Početak</td>
+                        <td>Kraj</td>
+                        <td>Trener</td>
+                        <td>Sala</td>
+                        <td>Vrsta</td>
+                    </tr>
+                }
+                @foreach (Termin t in Model.Termini)
+                {
+                    <tr>
+                        <td>@t.VrijemePocetak</td>
+                        <td>@t.VrijemeKraj</td>
+                        <td>@t.Trener.Zaposlenik.Ime @t.Trener.Zaposlenik.Prezime</td>
+                        <td>@t.Sala.Naziv</td>
+                        <td>@t.VrstaTreninga.Naziv</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="box-footer text-center">
+            <a href="/ModulRecepcionar/Termin" class="btn-block">Pregled svih termina</a>
+        </div>
+    </div>
+</div>
+
+<!--=== Obavijesti ===-->
+<div class="col-sm-12 col-lg-6">
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Posljednje obavijesti</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="box-body no-padding">
+            <table class="table table-hover table-bordered">
+                @foreach (Obavijest o in Model.Obavijesti)
+                {
+                    <tr onclick="location.href = '/ModulRecepcionar/Obavijest/Detalji?id=@o.ObavijestId'">
+                        <td style="width: 80%">@o.Naslov</td>
+                        <td>@o.DatumObjave.ToShortDateString()</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="box-footer text-center">
+            <a href="/ModulRecepcionar/Obavijest" class="btn-block">Pregled svih obavijesti</a>
+        </div>
+    </div>
+</div>
+
+<!--=== Uplate članarina ===-->
+<div class="col-sm-12 col-lg-6">
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Posljednje uplate</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="box-body no-padding">
+            <table class="table table-hover table-bordered">
+                <tr class="home-table-thead">
+                    <td>Član</td>
+                    <td>Datum uplate</td>
+                    <td>Iznos</td>
+                </tr>
+                @foreach (UplataClanarine u in Model.Uplate)
+                {
+                    <tr>
+                        <td>@u.Clan.Ime @u.Clan.Prezime</td>
+                        <td>@u.DatumUplate.ToShortDateString()</td>
+                        <td>@u.Iznos</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="box-footer text-center">
+            <a href="/ModulRecepcionar/UplataClanarine" class="btn-block">Pregled svih uplata</a>
+        </div>
+    </div>
+</div>
