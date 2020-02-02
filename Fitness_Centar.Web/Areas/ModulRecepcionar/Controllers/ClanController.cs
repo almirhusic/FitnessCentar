@@ -51,11 +51,42 @@ namespace Fitness_Centar.Web.Areas.ModulRecepcionar.Controllers
             Clan clan = _ctx.Clanovi.Find(id);
 
             LicniClanovi lc = _ctx.LicniClanovi.FirstOrDefault(x => x.ClanId == id);
+            List<Lajkovi> l = _ctx.Lajkovi.Where(x => x.ClanId == id).ToList();
+            List<ObjaveClanova> o = _ctx.ObjaveClanova.Where(x => x.ClanId == id).ToList();
+            List<KomentariObjavaClanova> k = _ctx.KomentariObjavaClanova.Where(x => x.ClanId == id).ToList();
+            List<Followers> f = _ctx.Followeri.Where(x => x.PratiteljClanId == id || x.ZapraceniClanId == id).ToList();
 
-            if (lc != null)
+            if(f.Count != 0)
             {
-                ViewData["porukaGreskaBrisanje"] = "Nije moguće obrisati člana jer se nalazi u ličnim članovima.";
-                return View("Brisanje");
+                foreach (var nn in f)
+                {
+                    _ctx.Followeri.Remove(nn);
+                }
+            }
+            if (l != null)
+            {
+                foreach (var nn in l)
+                {
+                    _ctx.Lajkovi.Remove(nn);
+                }
+            }
+            if(o != null)
+            {
+                foreach (var nn in o)
+                {
+                    _ctx.ObjaveClanova.Remove(nn);
+                }
+            }
+            if(k != null)
+            {
+                foreach (var nn in k)
+                {
+                    _ctx.KomentariObjavaClanova.Remove(nn);
+                }
+            }
+            if(lc != null)
+            {
+                _ctx.LicniClanovi.Remove(lc);
             }
             _ctx.Clanovi.Remove(clan);
             _ctx.SaveChanges();
